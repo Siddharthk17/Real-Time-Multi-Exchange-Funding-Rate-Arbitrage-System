@@ -114,13 +114,19 @@ Funding rates are periodic payments exchanged between long and short positions i
 
 | Exchange | Status | Exchange | Status |
 |: --------:|:------:|: --------:|:------:|
-| ![Binance](https://img.shields.io/badge/Binance-FCD535?style=flat-square&logo=binance&logoColor=black) | ✅ Live | ![OKX](https://img.shields.io/badge/OKX-000000?style=flat-square&logoColor=white) | ✅ Live |
-| ![Bybit](https://img.shields.io/badge/Bybit-F7A600?style=flat-square&logoColor=white) | ✅ Live | ![KuCoin](https://img.shields.io/badge/KuCoin-23AF91?style=flat-square&logoColor=white) | ✅ Live |
-| ![Bitget](https://img.shields.io/badge/Bitget-00CEA6?style=flat-square&logoColor=white) | ✅ Live | ![GateIO](https://img.shields.io/badge/Gate.io-17E7B6?style=flat-square&logoColor=white) | ✅ Live |
-| ![MEXC](https://img.shields.io/badge/MEXC-1972F5?style=flat-square&logoColor=white) | ✅ Live | ![Huobi](https://img.shields.io/badge/Huobi-1F5CFF?style=flat-square&logoColor=white) | ✅ Live |
-| ![BingX](https://img.shields.io/badge/BingX-2952CC?style=flat-square&logoColor=white) | ✅ Live | ![Kraken](https://img.shields.io/badge/Kraken-5741D9?style=flat-square&logoColor=white) | ✅ Live |
-| ![dYdX](https://img.shields.io/badge/dYdX-6966FF?style=flat-square&logoColor=white) | ✅ Live | ![BitMEX](https://img.shields.io/badge/BitMEX-D83E31?style=flat-square&logoColor=white) | ✅ Live |
-| ![Phemex](https://img.shields.io/badge/Phemex-B89EFF?style=flat-square&logoColor=white) | ✅ Live | | |
+| ![Binance](https://img.shields.io/badge/Binance-FCD535?style=flat-square&logo=binance&logoColor=black) | ✅ Live |
+| ![OKX](https://img.shields.io/badge/OKX-000000?style=flat-square&logoColor=white) | ✅ Live |
+| ![Bybit](https://img.shields.io/badge/Bybit-F7A600?style=flat-square&logoColor=white) | ✅ Live |
+| ![KuCoin](https://img.shields.io/badge/KuCoin-23AF91?style=flat-square&logoColor=white) | ✅ Live |
+| ![Bitget](https://img.shields.io/badge/Bitget-00CEA6?style=flat-square&logoColor=white) | ✅ Live |
+| ![GateIO](https://img.shields.io/badge/Gate.io-17E7B6?style=flat-square&logoColor=white) | ✅ Live |
+| ![MEXC](https://img.shields.io/badge/MEXC-1972F5?style=flat-square&logoColor=white) | ✅ Live |
+| ![Huobi](https://img.shields.io/badge/Huobi-1F5CFF?style=flat-square&logoColor=white) | ✅ Live |
+| ![BingX](https://img.shields.io/badge/BingX-2952CC?style=flat-square&logoColor=white) | ✅ Live |
+| ![Kraken](https://img.shields.io/badge/Kraken-5741D9?style=flat-square&logoColor=white) | ✅ Live |
+| ![dYdX](https://img.shields.io/badge/dYdX-6966FF?style=flat-square&logoColor=white) | ✅ Live |
+| ![BitMEX](https://img.shields.io/badge/BitMEX-D83E31?style=flat-square&logoColor=white) | ✅ Live |
+| ![Phemex](https://img.shields.io/badge/Phemex-B89EFF?style=flat-square&logoColor=white) | ✅ Live | 
 
 **13 Exchanges** • **Hundreds of Trading Pairs** • **Real-Time Data**
 
