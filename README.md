@@ -4,9 +4,9 @@
 
 ### Real-Time Multi-Exchange Funding Rate Arbitrage System
 
-[![Python](https://img.shields.io/badge/Python-3.9+-3776AB? style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Async](https://img.shields.io/badge/Async-Powered-6366f1?style=for-the-badge&logo=fastapi&logoColor=white)](https://docs.python.org/3/library/asyncio.html)
-[![License](https://img.shields.io/badge/License-MIT-10b981? style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge)](LICENSE)
 [![Exchanges](https://img.shields.io/badge/Exchanges-13+-ef4444?style=for-the-badge&logo=bitcoin&logoColor=white)](#-supported-exchanges)
 
 <br/>
