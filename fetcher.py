@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 import logging
 import time
+import json
 from typing import List, Any
 from models import FundingRate
 
@@ -10,25 +11,23 @@ logger.setLevel(logging.INFO)
 
 class AsyncFetcher:
     def __init__(self, user_agent: str):
-        # 1. Standard Headers
         self.std_headers = {
             'User-Agent': 'python-requests/2.31.0', 
             'Accept': 'application/json',
             'Connection': 'keep-alive'
         }
-        
-        # 2. Browser Headers (Mimic Chrome exactly)
+        # Mimic Chrome to bypass WAFs
         self.browser_headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
             'Referer': 'https://www.google.com/',
+            'Origin': 'https://www.google.com',
             'Connection': 'keep-alive',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-Site': 'cross-site',
         }
-        
         self.session = None
 
     async def start_session(self):
@@ -42,23 +41,31 @@ class AsyncFetcher:
         if self.session:
             await self.session.close()
 
-    async def _fetch(self, url: str, mode: str = 'std', extra_headers: dict = None) -> Any:
+    async def _fetch(self, url: str, mode: str = 'std', extra_headers: dict = None, method: str = 'GET', post_data: dict = None) -> Any:
         if not self.session: return None
         headers = self.browser_headers.copy() if mode == 'browser' else self.std_headers.copy()
         if extra_headers: headers.update(extra_headers)
 
         try:
-            async with self.session.get(url, headers=headers, ssl=False) as response:
-                if response.status == 200:
-                    return await response.json()
-                return None
+            if method == 'POST':
+                if 'Content-Type' not in headers:
+                    headers['Content-Type'] = 'application/json'
+                async with self.session.post(url, headers=headers, json=post_data, ssl=False) as response:
+                    if response.status == 200:
+                        return await response.json()
+            else:
+                async with self.session.get(url, headers=headers, ssl=False) as response:
+                    if response.status == 200:
+                        return await response.json()
+            return None
         except Exception:
             return None
 
     def _norm(self, symbol: str) -> str:
         return symbol.replace('-', '').replace('_', '').replace('/', '').upper()
 
-    # Exchanges
+    # EXISTING EXCHANGES
+
     async def get_binance(self) -> List[FundingRate]:
         data = await self._fetch("https://fapi.binance.com/fapi/v1/premiumIndex", mode='browser')
         if not data: return []
@@ -90,12 +97,9 @@ class AsyncFetcher:
         return res
 
     async def get_okx(self) -> List[FundingRate]:
-        # "PriAPI" (Internal Private API) - Bypasses WAF
         url = "https://www.okx.com/priapi/v5/public/tickers?instType=SWAP"
-        # Needs specific headers to look like internal traffic
         headers = {"Referer": "https://www.okx.com/trade-swap"}
         data = await self._fetch(url, mode='browser', extra_headers=headers)
-        
         if not data or data.get('code') != '0': return []
         res, ts = [], time.time()
         for i in data.get('data', []):
@@ -138,7 +142,6 @@ class AsyncFetcher:
         return res
 
     async def get_huobi(self) -> List[FundingRate]:
-        # Use Mirror
         url = "https://api.hbdm.vn/linear-swap-api/v1/swap_batch_funding_rate"
         data = await self._fetch(url, mode='std')
         if not data or data.get('status') != 'ok': return []
@@ -208,7 +211,6 @@ class AsyncFetcher:
     async def get_phemex(self) -> List[FundingRate]:
         url = "https://api.phemex.com/md/v2/ticker/24hr"
         data = await self._fetch(url, mode='std', extra_headers={"Accept": "*/*"})
-        
         if not data or 'result' not in data: return []
         res, ts = [], time.time()
         for i in data['result']:
@@ -217,6 +219,125 @@ class AsyncFetcher:
                     rate = (float(i['fundingRate']) / 100000000) * 100
                     res.append(FundingRate(exchange="Phemex", symbol=i['symbol'], rate=rate, timestamp=ts))
                 except: continue
+        return res
+
+    async def get_htx(self) -> List[FundingRate]:
+        url = "https://api.hbdm.com/linear-swap-api/v1/swap_batch_funding_rate"
+        data = await self._fetch(url, mode='std')
+        if not data or data.get('status') != 'ok': return []
+        res, ts = [], time.time()
+        for i in data.get('data', []):
+            if i.get('contract_code', '').endswith('USDT') and i.get('funding_rate'):
+                try:
+                    res.append(FundingRate(exchange="HTX", symbol=self._norm(i['contract_code']), rate=float(i['funding_rate']) * 100, timestamp=ts))
+                except: continue
+        return res
+
+    async def get_crypto_com(self) -> List[FundingRate]:
+        url = "https://deriv-api.crypto.com/v1/public/get-valuations?valuation_type=funding_rate"
+        data = await self._fetch(url, mode='browser')
+        
+        if not data or data.get('code') != 0: return []
+        res, ts = [], time.time()
+        
+        for i in data.get('result', {}).get('data', []):
+            sym = i.get('i', '')
+            rate = i.get('v')
+            
+            if sym.endswith('PERP') and rate is not None:
+                try:
+                    norm = sym.replace('_', '').replace('-PERP', '')
+                    res.append(FundingRate(exchange="CryptoCom", symbol=norm, rate=float(rate) * 100, timestamp=ts))
+                except: continue
+        return res
+
+    async def get_coinbase(self) -> List[FundingRate]:
+        res, ts = [], time.time()
+        
+        url_int = "https://api.international.coinbase.com/api/v1/instruments"
+        data_int = await self._fetch(url_int, mode='browser')
+        
+        if data_int and 'results' in data_int:
+            for i in data_int['results']:
+                if i.get('type') == 'PERPETUAL':
+                    sym = i.get('symbol', '')  
+                    rate = i.get('funding_rate')
+                    if sym and rate:
+                        try:
+                            norm = sym.replace('-', '').replace('PERP', 'USDT')
+                            res.append(FundingRate(exchange="Coinbase", symbol=norm, rate=float(rate) * 100, timestamp=ts))
+                        except: continue
+
+        if not res:
+            url_adv = "https://api.coinbase.com/api/v3/brokerage/products"
+            data_adv = await self._fetch(url_adv, mode='browser')
+            if data_adv and 'products' in data_adv:
+                for i in data_adv['products']:
+                    if i.get('product_type') == 'FUTURE': 
+                        pass 
+        
+        return res
+
+    async def get_hyperliquid(self) -> List[FundingRate]:
+        url = "https://api.hyperliquid.xyz/info"
+        post_body = {"type": "metaAndAssetCtxs"}
+        data = await self._fetch(url, mode='std', method='POST', post_data=post_body)
+        
+        if not data or not isinstance(data, list) or len(data) < 2: return []
+        
+        universe = data[0].get('universe', []) if isinstance(data[0], dict) else data[0]
+        ctxs = data[1]
+        
+        res, ts = [], time.time()
+        if len(universe) != len(ctxs): return []
+
+        for u, c in zip(universe, ctxs):
+            try:
+                name = u.get('name')
+                funding = c.get('funding')
+                if name and funding:
+                    symbol = f"{name}USDT"
+                    res.append(FundingRate(exchange="Hyperliquid", symbol=symbol, rate=float(funding) * 100, timestamp=ts))
+            except: continue
+        return res
+
+    async def get_coinex(self) -> List[FundingRate]:
+        url = "https://api.coinex.com/perpetual/v1/market/ticker/all"
+        data = await self._fetch(url, mode='std')
+        if not data or data.get('code') != 0: return []
+        
+        ticker_data = data.get('data', {}).get('ticker', {})
+        res, ts = [], time.time()
+        
+        for sym, details in ticker_data.items():
+            rate = details.get('funding_rate_next') or details.get('funding_rate_last')
+            if sym.endswith('USDT') and rate:
+                try:
+                    res.append(FundingRate(exchange="CoinEx", symbol=sym, rate=float(rate) * 100, timestamp=ts))
+                except: continue
+        return res
+
+    async def get_bitunix(self) -> List[FundingRate]:
+        url = "https://fapi.bitunix.com/api/v1/futures/market/funding_rate/batch"
+        data = await self._fetch(url, mode='std')
+        
+        res, ts = [], time.time()
+        if data and data.get('code') == 0:
+             for i in data.get('data', []):
+                if i.get('symbol', '').endswith('USDT') and i.get('fundingRate'):
+                    try:
+                        res.append(FundingRate(exchange="BitUnix", symbol=i['symbol'], rate=float(i['fundingRate']), timestamp=ts))
+                    except: continue
+
+        if not res:
+            url_ticker = "https://fapi.bitunix.com/api/v1/futures/market/tickers"
+            data_t = await self._fetch(url_ticker, mode='std')
+            if data_t and data_t.get('code') == 0:
+                for i in data_t.get('data', []):
+                    if i.get('symbol', '').endswith('USDT') and i.get('fundingRate'):
+                        try:
+                            res.append(FundingRate(exchange="BitUnix", symbol=i['symbol'], rate=float(i['fundingRate']), timestamp=ts))
+                        except: continue
         return res
 
     async def fetch_all(self) -> List[FundingRate]:
@@ -235,6 +356,12 @@ class AsyncFetcher:
             "dYdX": self.get_dydx(),
             "BitMEX": self.get_bitmex(),
             "Phemex": self.get_phemex(),
+            "HTX": self.get_htx(),
+            "CryptoCom": self.get_crypto_com(),
+            "Coinbase": self.get_coinbase(),
+            "Hyperliquid": self.get_hyperliquid(),
+            "CoinEx": self.get_coinex(),
+            "BitUnix": self.get_bitunix(),
         }
         results = await asyncio.gather(*tasks_map.values(), return_exceptions=True)
         flat_results = []
@@ -251,5 +378,5 @@ class AsyncFetcher:
         print("\n🔍 FETCH REPORT:")
         for name, count in debug_stats.items():
             status = f"[green]✅ {count}[/green]" if isinstance(count, int) and count > 0 else f"[red]❌ {count}[/red]"
-            print(f"   {name:10s}: {status}")
+            print(f"   {name:12s}: {status}")
         return flat_results
