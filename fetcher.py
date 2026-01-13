@@ -64,8 +64,7 @@ class AsyncFetcher:
     def _norm(self, symbol: str) -> str:
         return symbol.replace('-', '').replace('_', '').replace('/', '').upper()
 
-    # EXISTING EXCHANGES
-
+    # EXCHANGES
     async def get_binance(self) -> List[FundingRate]:
         data = await self._fetch("https://fapi.binance.com/fapi/v1/premiumIndex", mode='browser')
         if not data: return []
