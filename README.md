@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ ATHENA
+# ⚡ ATHENA ⚡
 
 ### Real-Time Multi-Exchange Funding Rate Arbitrage System
 
@@ -16,9 +16,8 @@
 <img src="https://img.shields.io/badge/🤖_Telegram_Alerts-Enabled-06b6d4?style=flat-square" />
 
 <br/><br/>
-<div align="center">
-
-```
+<p align="center">
+<pre>
     █████╗ ████████╗██╗  ██╗███████╗███╗   ██╗ █████╗ 
    ██╔══██╗╚══██╔══╝██║  ██║██╔════╝████╗  ██║██╔══██╗
    ███████║   ██║   ███████║█████╗  ██╔██╗ ██║███████║
@@ -27,8 +26,8 @@
    ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝
                                                        
    ⚡ Funding Rate Arbitrage Command Center ⚡
-```
-</div>
+</pre>
+</p>
 <br/>
 
 *A High-Performance, Asynchronous Python System That Scans 19+ Cryptocurrency Exchanges In Real-Time To Identify Profitable Funding Rate Arbitrage Opportunities Across Perpetual Futures Markets.*
