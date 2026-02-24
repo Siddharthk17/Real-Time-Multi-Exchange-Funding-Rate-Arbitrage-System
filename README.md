@@ -55,11 +55,11 @@ Funding rates are periodic payments exchanged between long and short positions i
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │                                                                    │
-│   📈 LONG on Exchange A (Low/Negative Rate) → RECEIVE Funding     │
+│   📈 LONG on Exchange A (Low/Negative Rate) → RECEIVE Funding      │
 │                          +                                         │
-│   📉 SHORT on Exchange B (High/Positive Rate) → RECEIVE Funding   │
+│   📉 SHORT on Exchange B (High/Positive Rate) → RECEIVE Funding    │
 │                          =                                         │
-│   💰 PROFIT from the Spread (Market Neutral Position)             │
+│   💰 PROFIT from the Spread (Market Neutral Position)              │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
@@ -137,7 +137,7 @@ The built-in **Command Center** provides a stunning real-time interface:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│  ⚡ ATHENA                                            🟢 System Online      │
+│  ⚡ ATHENA                                            🟢 System Online        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐ ┌────────────────┐  │
@@ -293,7 +293,6 @@ Contributions are welcome! Here's how you can help:
 ### Ideas for Contribution
 - [ ] Add more exchanges (Deribit, Bitstamp, etc.)
 - [ ] Implement historical data tracking
-- [ ] Create Docker containerization
 - [ ] Add automated trading execution
 - [ ] Build mobile app interface
 
