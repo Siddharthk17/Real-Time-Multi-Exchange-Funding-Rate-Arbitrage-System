@@ -11,7 +11,7 @@
 
 <br/>
 
-<img src="https://img.shields.io/badge/⚡_Ultra_Low_Latency-~200ms-6366f1?style=flat-square" />
+<img src="https://img.shields.io/badge/⚡_Ultra_Low_Latency-~350ms-6366f1?style=flat-square" />
 <img src="https://img.shields.io/badge/📡_Real--Time_Scanning-Active-10b981?style=flat-square" />
 <img src="https://img.shields.io/badge/🤖_Telegram_Alerts-Enabled-06b6d4?style=flat-square" />
 
@@ -142,7 +142,7 @@ The built-in **Command Center** provides a stunning real-time interface:
 │                                                                              │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐ ┌────────────────┐  │
 │  │ TOP SPREAD  │ │OPPORTUNITIES│ │ EXCHANGE DOMINANCE  │ │  METADATA      │  │
-│  │   0.4523%   │ │     47      │ │ Long:     Bybit     │ │ 19 Exch.       │  │ 
+│  │   0.4523%   │ │     47      │ │ Long:     Bybit     │ │ 19 Exch.       │  │
 │  │  High Yield │ │   Active    │ │ Short:  Binance     │ │ 1200+ Pairs    │  │
 │  └─────────────┘ └─────────────┘ └─────────────────────┘ └────────────────┘  │
 │                                                                              │
@@ -210,7 +210,7 @@ Create a `.env` file in the project root:
 MIN_SPREAD=0.025
 
 # Data fetch interval in seconds
-FETCH_INTERVAL=0.0001
+FETCH_INTERVAL=0
 
 # TELEGRAM ALERTS
 # Get your bot token from @BotFather on Telegram
