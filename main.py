@@ -21,7 +21,7 @@ load_dotenv()
 console = Console()
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-FETCH_INTERVAL = int(os.getenv("FETCH_INTERVAL", 0.0001))
+FETCH_INTERVAL = int(os.getenv("FETCH_INTERVAL", 0))
 MIN_SPREAD = float(os.getenv("MIN_SPREAD", 0.025))
 
 class ArbitrageBot:
